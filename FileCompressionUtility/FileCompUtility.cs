@@ -6,29 +6,71 @@ public class FileCompUtility
 {
     public static void CompressFile(string fileToCompress, string destinationFilePath)
     {
-        //creating new file stream to create a zip archive
-        using (FileStream zipToCreate = new FileStream(destinationFilePath, FileMode.Create))
-        using (ZipArchive archive = new ZipArchive(zipToCreate, ZipArchiveMode.Update))
-        {
-            ZipArchiveEntry zipEntry = archive.CreateEntry(Path.GetFileName(fileToCompress));//creating a new entry
+        if (SamePath(fileToCompress, destinationFilePath))
+            throw new ArgumentException("The zip file can't replace the file being compressed. Choose a different name for the zip.");
 
-            //writing the contents of the file to the zip entry
-            using (StreamWriter writer = new StreamWriter(zipEntry.Open()))
-            using (StreamReader reader = new StreamReader(fileToCompress))
+        WriteViaTempFile(destinationFilePath, tempPath =>
+        {
+            using (FileStream zipToCreate = new FileStream(tempPath, FileMode.CreateNew))
+            using (ZipArchive archive = new ZipArchive(zipToCreate, ZipArchiveMode.Create))
             {
-                writer.Write(reader.ReadToEnd());
+                //copies the raw bytes of the file into the archive, so binary files are stored exactly and nothing is loaded into memory
+                archive.CreateEntryFromFile(fileToCompress, Path.GetFileName(fileToCompress));
             }
+        });
+    }
+
+    public void CompressDirectory(string directoryPath, string destinationArchive)//creates zip archive from the directory and its contents
+    {
+        if (IsInsideDirectory(destinationArchive, directoryPath))
+            throw new ArgumentException("The zip file can't be saved inside the folder being compressed. Choose a location outside that folder.");
+
+        WriteViaTempFile(destinationArchive, tempPath => ZipFile.CreateFromDirectory(directoryPath, tempPath));
+    }
+
+    public void DecompressFile(string zipFilePath, string destinationDirectory, bool overwriteFiles = false)//decompress the zip file to the specified directory
+    {
+        ZipFile.ExtractToDirectory(zipFilePath, destinationDirectory, overwriteFiles);
+    }
+
+    //lists the files in the archive that already exist in the destination, so the user can be asked before anything is extracted
+    public List<string> FindExistingFiles(string zipFilePath, string destinationDirectory)
+    {
+        using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
+        {
+            return archive.Entries
+                .Where(entry => entry.Name != "")//folder entries have no file name
+                .Select(entry => entry.FullName)
+                .Where(name => File.Exists(Path.Combine(destinationDirectory, name)))
+                .ToList();
         }
     }
 
-    public void CompressDirectory(string directoryPath, string destinationArchive)//creates zup archive from the directory abd its contents
+    //writes to a temporary file first and only replaces the destination once it succeeded, so a failure never leaves a broken zip behind
+    private static void WriteViaTempFile(string destinationPath, Action<string> write)
     {
-        ZipFile.CreateFromDirectory(directoryPath, destinationArchive);
+        string tempPath = destinationPath + "." + Guid.NewGuid().ToString("N") + ".tmp";
+        try
+        {
+            write(tempPath);
+            File.Move(tempPath, destinationPath, overwrite: true);//the save dialog already asked the user before replacing
+        }
+        finally
+        {
+            if (File.Exists(tempPath))
+                File.Delete(tempPath);
+        }
     }
 
-    public void DecompressFile(string zipFilePath, string destinationDirectory)//decompress the zip file to the specified directory
+    private static bool SamePath(string first, string second)
     {
-        ZipFile.ExtractToDirectory(zipFilePath, destinationDirectory);
+        return string.Equals(Path.GetFullPath(first), Path.GetFullPath(second), StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsInsideDirectory(string path, string directory)
+    {
+        string directoryWithSeparator = Path.TrimEndingDirectorySeparator(Path.GetFullPath(directory)) + Path.DirectorySeparatorChar;
+        return Path.GetFullPath(path).StartsWith(directoryWithSeparator, StringComparison.OrdinalIgnoreCase);
     }
 
 }

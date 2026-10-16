@@ -2,47 +2,108 @@
 
 ## Description
 
-The **File Compression System** is a Windows application designed to help users easily compress and decompress files. Using this tool, users can save storage space by compressing individual files or entire directories into compressed formats (such as **.zip**) and easily extract them when needed.
+The **File Compression System** is a Windows application designed to help users easily compress and decompress files. Using this tool, users can save storage space by compressing individual files or entire directories into **.zip** archives and easily extract them when needed.
 
-This application offers a simple user interface that enables seamless compression and decompression of files. It supports both **single file compression** and **multiple file compression** as well as **directory compression**.
+This application offers a simple user interface for compressing a **single file**, compressing a **whole directory**, and **extracting** a .zip archive.
 
 ## Features
 
-- **Compress Files**: Compress individual files into a **.zip** archive.
-- **Compress Multiple Files**: Compress multiple files at once into a single **.zip** archive.
-- **Compress Directories**: Compress entire directories into **.zip** format.
-- **Decompress Files**: Extract files from **.zip** archives.
-- **Simple UI**: Easy-to-use interface to interact with the compression tool.
-- **Drag-and-Drop** (Optional feature): Allows users to drag and drop files or folders for compression.
-- **Error Handling**: User-friendly error messages if the process encounters any issues.
+- **Compress Files**: Compress any single file (text, images, executables, documents) into a **.zip** archive. Files are stored byte-for-byte.
+- **Compress Directories**: Compress entire directories into **.zip** format, including subfolders and empty folders.
+- **Decompress Files**: Extract files from **.zip** archives. If files with the same names already exist in the destination, the app asks before overwriting them.
+- **Large File Support**: Handles files and archives over 4 GB, using about 50 MB of memory regardless of file size.
+- **Responsive UI**: Compression runs in the background, so the window never freezes. The buttons are disabled until the current operation finishes.
+- **Error Handling**: User-friendly error messages for locked files, damaged archives, missing files and invalid save locations. A failed operation never leaves a half-written zip behind.
 
 ## Technologies Used
 
 - **C#** (Programming Language)
-- **Windows Forms** (UI Framework)
+- **.NET 9** with **Windows Forms** (UI Framework)
 - **System.IO.Compression** (For compression and decompression)
+
+## How It Compresses
+
+The app creates standard **ZIP** archives using the **DEFLATE** algorithm, the same format Windows Explorer, 7-Zip and WinRAR use, so any zip tool can open its archives. .NET implements DEFLATE with the [zlib-ng](https://github.com/zlib-ng/zlib-ng) library, at its default balanced compression level.
+
+DEFLATE works in two stages:
+
+1. **LZ77 (removing repeats)**: The compressor scans the file while remembering the last 32 KB it has seen. When a run of bytes appears that it has already seen, it writes a short reference such as *"go back 1,200 bytes and copy 18 bytes"* instead of the bytes themselves. Text, logs, source code and spreadsheets repeat a lot, so this removes much of their size.
+2. **Huffman coding (shorter codes for common symbols)**: The output of stage 1 is then re-encoded so that frequent symbols get short bit codes and rare ones get long codes, similar to how Morse code gives the common letter "E" a single dot.
+
+DEFLATE is **lossless**: decompressing gives back exactly the original bytes. Decompression is much faster than compression, because it only follows the references and decodes the bits and never has to search for matches.
+
+The ZIP format then wraps each compressed file with its name, folder path, size and a CRC-32 checksum. A **central directory** at the end of the archive lists every file, which lets the app check an archive for conflicts before extracting anything. Archives larger than 4 GB automatically use the **ZIP64** extension.
+
+**How much will my files shrink?** It depends on how repetitive the data is:
+
+| Type of data | Typical size after compression |
+|---|---|
+| Text, logs, CSV, source code | 15–30% of original |
+| Executables, uncompressed documents | 40–60% of original |
+| JPEG, PNG, MP4, MP3, existing .zip/.docx | ~100%, these are already compressed |
+
+## Performance
+
+Measured on an Intel Core i7-8700K with 32 GB RAM on Windows 10, using a Release build:
+
+| Test | Compress | Size after | Extract |
+|---|---|---|---|
+| 100 MB text file | 1.6 s (62 MB/s) | 24% | — |
+| 1.2 GB text file | 19 s (63 MB/s) | 24% | — |
+| 4.5 GB text file | 74 s (62 MB/s) | 24% | 8–47 s |
+| 1.2 GB random (incompressible) file | 31 s (39 MB/s) | 100% | — |
+| Folder, 2 GB (half text, half random data) | 42 s (48 MB/s) | 62% | 3–4 s |
+| Folder, 10,000 × 1 KB files | 1.7 s | 53% | 4.6 s |
+
+- **Compression** runs at roughly **40–65 MB/s** on one CPU core. Compressible data (text) is faster than incompressible data.
+- **Extraction** of large files runs at several hundred MB/s and is usually limited by disk speed. Antivirus scanning of newly written files can slow it down, which is why the 4.5 GB test ranged from 8 to 47 s.
+- **Memory** use stays around **50 MB**, even for multi-gigabyte files, because files are streamed instead of being loaded into memory.
+- With many small files, the first run can be much slower than shown above while Windows Defender scans each file the first time it's read. Run it again and the scan is cached.
+
+## Getting Started
+
+### Requirements
+
+- Windows 10 or 11
+- [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0) to build from source
+
+### Run from source
+
+```bash
+git clone https://github.com/Ushmayne/File-Compression-Utility.git
+cd File-Compression-Utility
+dotnet run --project FileCompressionUtility
+```
+
+You can also open `File-Compression-Utility.sln` in Visual Studio 2022 and press **F5**.
+
+### Build a standalone .exe
+
+```bash
+dotnet publish FileCompressionUtility -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o publish
+```
+
+This produces a single `publish/FileCompressionUtility.exe` (about 110 MB) that runs on any 64-bit Windows PC without installing .NET. For a much smaller exe (about 180 KB) that requires the [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0), use `--self-contained false` instead.
 
 ## How to Use
 
-1. **Download and Install**:
-    - Download the **File Compression System** executable or installer.
-    - Install or run the application directly.
+1. **Compressing a File**:
+    - Click **Compress File** and select the file you want to compress.
+    - Choose where to save the **.zip** archive.
 
-2. **Compressing Files**:
-    - Click on the "Compress File" button to select a single file you want to compress.
-    - Select the destination where you want to save the compressed file.
-    - The file will be compressed into a **.zip** archive.
+2. **Compressing a Directory**:
+    - Click **Compress Directory** and select a folder.
+    - Choose where to save the **.zip** archive. It must be outside the folder being compressed.
+    - The folder's contents are compressed, preserving the subfolder structure.
 
-3. **Compressing Multiple Files**:
-    - Click on the "Compress Multiple Files" button to select multiple files.
-    - Select the destination for saving the compressed file.
-    - The selected files will be compressed into a single **.zip** archive.
+3. **Decompressing a File**:
+    - Click **Decompress File** and select a **.zip** file.
+    - Choose the folder to extract into.
+    - If any files already exist there, you'll be asked whether to overwrite them. Choosing **No** cancels without extracting anything.
 
-4. **Compressing Directories**:
-    - Click on the "Compress Directory" button to select a folder.
-    - The entire folder will be compressed into a **.zip** archive, preserving the folder structure.
+## Good to Know
 
-5. **Decompressing Files**:
-    - Click on the "Decompress File" button to select a **.zip** file.
-    - Choose the location to extract the files from the archive.
-    - The files will be extracted to the selected destination folder.
+- **Empty folders**: Compressing an empty folder creates a valid, empty zip. Empty subfolders are kept inside archives.
+- **Folder name**: The selected folder's *contents* go into the zip, not the folder itself. Extracting puts those contents directly in the destination folder.
+- **Damaged archives**: Corrupted or non-zip files are rejected with an error message before anything is extracted.
+- **Safety**: Archives containing paths that try to escape the destination folder (for example `../file.txt`) are blocked.
