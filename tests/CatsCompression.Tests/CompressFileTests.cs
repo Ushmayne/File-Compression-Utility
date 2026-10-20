@@ -5,7 +5,6 @@ namespace CatsCompression.Tests;
 public class CompressFileTests : IDisposable
 {
     private readonly TempFolder temp = new();
-    private readonly FileCompUtility utility = new();
 
     public void Dispose() => temp.Dispose();
 
@@ -16,7 +15,7 @@ public class CompressFileTests : IDisposable
         string zip = temp.PathTo("notes.zip");
 
         FileCompUtility.CompressFile(source, zip);
-        utility.DecompressFile(zip, temp.PathTo("out"));
+        FileCompUtility.DecompressFile(zip, temp.PathTo("out"));
 
         Assert.Equal(File.ReadAllBytes(source), File.ReadAllBytes(temp.PathTo("out", "notes.txt")));
     }
@@ -32,7 +31,7 @@ public class CompressFileTests : IDisposable
         string zip = temp.PathTo("image.zip");
 
         FileCompUtility.CompressFile(source, zip);
-        utility.DecompressFile(zip, temp.PathTo("out"));
+        FileCompUtility.DecompressFile(zip, temp.PathTo("out"));
 
         Assert.Equal(data, File.ReadAllBytes(temp.PathTo("out", "image.bin")));
     }

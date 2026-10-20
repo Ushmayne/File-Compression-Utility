@@ -5,7 +5,6 @@ namespace CatsCompression.Tests;
 public class DecompressTests : IDisposable
 {
     private readonly TempFolder temp = new();
-    private readonly FileCompUtility utility = new();
 
     public void Dispose() => temp.Dispose();
 
@@ -31,7 +30,7 @@ public class DecompressTests : IDisposable
     {
         string zip = MakeZip("a.zip", ("hello.txt", "hi"));
 
-        utility.DecompressFile(zip, temp.PathTo("new", "folder"));
+        FileCompUtility.DecompressFile(zip, temp.PathTo("new", "folder"));
 
         Assert.Equal("hi", File.ReadAllText(temp.PathTo("new", "folder", "hello.txt")));
     }
@@ -42,7 +41,7 @@ public class DecompressTests : IDisposable
         string zip = MakeZip("a.zip", ("hello.txt", "from zip"));
         temp.WriteFile(Path.Combine("out", "hello.txt"), "original");
 
-        Assert.ThrowsAny<IOException>(() => utility.DecompressFile(zip, temp.PathTo("out")));
+        Assert.ThrowsAny<IOException>(() => FileCompUtility.DecompressFile(zip, temp.PathTo("out")));
 
         Assert.Equal("original", File.ReadAllText(temp.PathTo("out", "hello.txt")));
     }
@@ -53,7 +52,7 @@ public class DecompressTests : IDisposable
         string zip = MakeZip("a.zip", ("hello.txt", "from zip"));
         temp.WriteFile(Path.Combine("out", "hello.txt"), "original");
 
-        utility.DecompressFile(zip, temp.PathTo("out"), overwriteFiles: true);
+        FileCompUtility.DecompressFile(zip, temp.PathTo("out"), overwriteFiles: true);
 
         Assert.Equal("from zip", File.ReadAllText(temp.PathTo("out", "hello.txt")));
     }
@@ -63,7 +62,7 @@ public class DecompressTests : IDisposable
     {
         string fake = temp.WriteFile("fake.zip", "this is just text");
 
-        Assert.Throws<InvalidDataException>(() => utility.DecompressFile(fake, temp.PathTo("out")));
+        Assert.Throws<InvalidDataException>(() => FileCompUtility.DecompressFile(fake, temp.PathTo("out")));
     }
 
     [Fact]
@@ -75,7 +74,7 @@ public class DecompressTests : IDisposable
         byte[] bytes = File.ReadAllBytes(zip);
         string damaged = temp.WriteFile("damaged.zip", bytes[..(bytes.Length / 2)]);
 
-        Assert.Throws<InvalidDataException>(() => utility.DecompressFile(damaged, temp.PathTo("out")));
+        Assert.Throws<InvalidDataException>(() => FileCompUtility.DecompressFile(damaged, temp.PathTo("out")));
     }
 
     [Fact]
@@ -83,7 +82,7 @@ public class DecompressTests : IDisposable
     {
         string zip = MakeZip("evil.zip", ("../escaped.txt", "gotcha"));
 
-        Assert.ThrowsAny<IOException>(() => utility.DecompressFile(zip, temp.PathTo("out")));
+        Assert.ThrowsAny<IOException>(() => FileCompUtility.DecompressFile(zip, temp.PathTo("out")));
 
         Assert.False(File.Exists(temp.PathTo("escaped.txt")));
     }
@@ -93,7 +92,7 @@ public class DecompressTests : IDisposable
     {
         string zip = MakeZip("evil.zip", ("safe/../../../escaped.txt", "gotcha"));
 
-        Assert.ThrowsAny<IOException>(() => utility.DecompressFile(zip, temp.PathTo("out", "inner")));
+        Assert.ThrowsAny<IOException>(() => FileCompUtility.DecompressFile(zip, temp.PathTo("out", "inner")));
 
         Assert.False(File.Exists(temp.PathTo("escaped.txt")));
         Assert.False(File.Exists(temp.PathTo("out", "escaped.txt")));
@@ -111,7 +110,7 @@ public class DecompressTests : IDisposable
         temp.WriteFile(Path.Combine("out", "same.txt"), "existing");
         temp.WriteFile(Path.Combine("out", "sub", "nested.txt"), "existing");
 
-        List<string> existing = utility.FindExistingFiles(zip, temp.PathTo("out"));
+        List<string> existing = FileCompUtility.FindExistingFiles(zip, temp.PathTo("out"));
 
         Assert.Equal(["same.txt", "sub/nested.txt"], existing.Order());
     }
@@ -122,7 +121,7 @@ public class DecompressTests : IDisposable
         string zip = MakeZip("a.zip", ("sub/", ""), ("sub/file.txt", "zip"));
         Directory.CreateDirectory(temp.PathTo("out", "sub"));
 
-        Assert.Empty(utility.FindExistingFiles(zip, temp.PathTo("out")));
+        Assert.Empty(FileCompUtility.FindExistingFiles(zip, temp.PathTo("out")));
     }
 
     [Fact]
@@ -130,7 +129,7 @@ public class DecompressTests : IDisposable
     {
         string zip = MakeZip("a.zip", ("a.txt", "x"), ("b.txt", "y"));
 
-        Assert.Empty(utility.FindExistingFiles(zip, temp.PathTo("does-not-exist")));
+        Assert.Empty(FileCompUtility.FindExistingFiles(zip, temp.PathTo("does-not-exist")));
     }
 
     [Fact]
@@ -138,7 +137,7 @@ public class DecompressTests : IDisposable
     {
         string fake = temp.WriteFile("fake.zip", "not a zip");
 
-        Assert.Throws<InvalidDataException>(() => utility.FindExistingFiles(fake, temp.PathTo("out")));
+        Assert.Throws<InvalidDataException>(() => FileCompUtility.FindExistingFiles(fake, temp.PathTo("out")));
     }
 
 }

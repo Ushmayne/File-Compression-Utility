@@ -250,6 +250,10 @@ GitHub then runs the tests, builds both exes with that version number, and posts
 
 - **Safety**: Archives containing paths that try to escape the destination folder (for example `../file.txt`) are blocked.
 
+## Contributing
+
+Bug reports, ideas and pull requests are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for how to build, test and submit changes. To report a security problem, follow [SECURITY.md](SECURITY.md).
+
 ## License
 
 Cats Compression is open source under the [MIT License](LICENSE). You can use, change and share it freely, including in commercial projects, as long as you keep the copyright notice.

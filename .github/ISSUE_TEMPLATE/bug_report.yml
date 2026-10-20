@@ -1,0 +1,53 @@
+name: Bug report
+description: Something isn't working right
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for reporting! For security problems, please follow SECURITY.md instead of opening a public issue.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+      placeholder: I clicked Compress Directory, picked my Photos folder, and...
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Click ...
+        2. Choose ...
+        3. See error ...
+    validations:
+      required: true
+  - type: textarea
+    id: error
+    attributes:
+      label: Error message
+      description: Copy the exact text of any error message, or attach a screenshot.
+  - type: input
+    id: app-version
+    attributes:
+      label: App version
+      description: Right-click the exe, Properties > Details > Product version.
+      placeholder: "1.0.0"
+    validations:
+      required: true
+  - type: input
+    id: windows-version
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+    validations:
+      required: true
+  - type: dropdown
+    id: download
+    attributes:
+      label: Which download are you using?
+      options:
+        - CatsCompression-...-win-x64.exe (48 MB)
+        - CatsCompression-...-win-x64-needs-dotnet9.exe (0.5 MB)
+        - Built from source

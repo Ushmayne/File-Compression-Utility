@@ -1,6 +1,6 @@
 ﻿namespace CatsCompression;
 
-partial class Form1
+partial class MainForm
 {
      private System.ComponentModel.IContainer components = null;//declaring the buttons that are going to be used in the form
     private Button btnCompressFile;
@@ -64,13 +64,13 @@ partial class Form1
         this.instructionsLabel.UseVisualStyleBackColor = true;
         this.instructionsLabel.Click += new System.EventHandler(this.instructionsLabelClick);
 
-        // Form1
+        // MainForm
         this.ClientSize = new System.Drawing.Size(300, 260);
         this.Controls.Add(this.btnCompressDirectory);
         this.Controls.Add(this.btnDecompressFile);
         this.Controls.Add(this.btnCompressFile);
         this.Controls.Add(this.instructionsLabel);
-        this.Name = "Cats Compression";
+        this.Name = "MainForm";
         this.Text = "Cats Compression";
         this.ResumeLayout(false);
         this.PerformLayout();

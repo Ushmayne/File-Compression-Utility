@@ -1,19 +1,12 @@
 namespace CatsCompression;
-using System.IO;
-using System.Windows.Forms;
-using System.IO.Compression;
 
-
-public partial class Form1 : Form
+public partial class MainForm : Form
 {
-
-    private FileCompUtility fileCompressionUtility;
-    public Form1()
+    public MainForm()
     {
         InitializeComponent();
-        using (Stream iconStream = typeof(Form1).Assembly.GetManifestResourceStream("app.ico")!)
+        using (Stream iconStream = typeof(MainForm).Assembly.GetManifestResourceStream("app.ico")!)
             Icon = new Icon(iconStream);
-        fileCompressionUtility = new FileCompUtility();
     }
     private async void btnCompressFileClick(object sender, EventArgs e)//response to when compress file button is clicked
     {
@@ -23,7 +16,7 @@ public partial class Form1 : Form
             if (openFileDialog.ShowDialog() == DialogResult.OK)
             {
                 string fileToCompress = openFileDialog.FileName;
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                using SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "ZIP Archive (*.zip)|*.zip";
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
@@ -54,7 +47,7 @@ public partial class Form1 : Form
                         List<string> existingFiles;
                         try
                         {
-                            existingFiles = fileCompressionUtility.FindExistingFiles(zipFilePath, destinationDirectory);
+                            existingFiles = FileCompUtility.FindExistingFiles(zipFilePath, destinationDirectory);
                         }
                         catch (Exception ex)
                         {
@@ -71,7 +64,7 @@ public partial class Form1 : Form
                             overwrite = true;
                         }
 
-                        await RunOperation(() => fileCompressionUtility.DecompressFile(zipFilePath, destinationDirectory, overwrite), "File decompressed successfully!");
+                        await RunOperation(() => FileCompUtility.DecompressFile(zipFilePath, destinationDirectory, overwrite), "File decompressed successfully!");
                     }
                 }
             }
@@ -85,13 +78,13 @@ public partial class Form1 : Form
             if (folderDialog.ShowDialog() == DialogResult.OK)
             {
                 string directoryToCompress = folderDialog.SelectedPath;
-                SaveFileDialog saveFileDialog = new SaveFileDialog();
+                using SaveFileDialog saveFileDialog = new SaveFileDialog();
                 saveFileDialog.Filter = "ZIP Archive (*.zip)|*.zip";
 
                 if (saveFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string destinationArchive = saveFileDialog.FileName;
-                    await RunOperation(() => fileCompressionUtility.CompressDirectory(directoryToCompress, destinationArchive), "Directory compressed successfully!");
+                    await RunOperation(() => FileCompUtility.CompressDirectory(directoryToCompress, destinationArchive), "Directory compressed successfully!");
                 }
             }
         }

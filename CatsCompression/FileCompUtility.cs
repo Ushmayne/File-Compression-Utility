@@ -1,8 +1,9 @@
 using System.IO.Compression;
-using System.IO;
-//a class to handle file compression and decompression
 
-public class FileCompUtility
+namespace CatsCompression;
+
+//handles compressing and extracting zip files
+public static class FileCompUtility
 {
     public static void CompressFile(string fileToCompress, string destinationFilePath)
     {
@@ -20,7 +21,7 @@ public class FileCompUtility
         });
     }
 
-    public void CompressDirectory(string directoryPath, string destinationArchive)//creates zip archive from the directory and its contents
+    public static void CompressDirectory(string directoryPath, string destinationArchive)//creates zip archive from the directory and its contents
     {
         if (IsInsideDirectory(destinationArchive, directoryPath))
             throw new ArgumentException("The zip file can't be saved inside the folder being compressed. Choose a location outside that folder.");
@@ -28,13 +29,13 @@ public class FileCompUtility
         WriteViaTempFile(destinationArchive, tempPath => ZipFile.CreateFromDirectory(directoryPath, tempPath));
     }
 
-    public void DecompressFile(string zipFilePath, string destinationDirectory, bool overwriteFiles = false)//decompress the zip file to the specified directory
+    public static void DecompressFile(string zipFilePath, string destinationDirectory, bool overwriteFiles = false)//decompress the zip file to the specified directory
     {
         ZipFile.ExtractToDirectory(zipFilePath, destinationDirectory, overwriteFiles);
     }
 
     //lists the files in the archive that already exist in the destination, so the user can be asked before anything is extracted
-    public List<string> FindExistingFiles(string zipFilePath, string destinationDirectory)
+    public static List<string> FindExistingFiles(string zipFilePath, string destinationDirectory)
     {
         using (ZipArchive archive = ZipFile.OpenRead(zipFilePath))
         {

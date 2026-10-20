@@ -5,7 +5,6 @@ namespace CatsCompression.Tests;
 public class CompressDirectoryTests : IDisposable
 {
     private readonly TempFolder temp = new();
-    private readonly FileCompUtility utility = new();
 
     public void Dispose() => temp.Dispose();
 
@@ -19,8 +18,8 @@ public class CompressDirectoryTests : IDisposable
         temp.WriteFile(Path.Combine("src", "a", "data.bin"), binary);
         string zip = temp.PathTo("src.zip");
 
-        utility.CompressDirectory(temp.PathTo("src"), zip);
-        utility.DecompressFile(zip, temp.PathTo("out"));
+        FileCompUtility.CompressDirectory(temp.PathTo("src"), zip);
+        FileCompUtility.DecompressFile(zip, temp.PathTo("out"));
 
         Assert.Equal("top level", File.ReadAllText(temp.PathTo("out", "readme.txt")));
         Assert.Equal("nested", File.ReadAllText(temp.PathTo("out", "a", "b", "deep.txt")));
@@ -33,7 +32,7 @@ public class CompressDirectoryTests : IDisposable
         temp.WriteFile(Path.Combine("src", "file.txt"), "x");
         string zip = temp.PathTo("src.zip");
 
-        utility.CompressDirectory(temp.PathTo("src"), zip);
+        FileCompUtility.CompressDirectory(temp.PathTo("src"), zip);
 
         using ZipArchive archive = ZipFile.OpenRead(zip);
         Assert.Equal("file.txt", Assert.Single(archive.Entries).FullName);
@@ -46,8 +45,8 @@ public class CompressDirectoryTests : IDisposable
         Directory.CreateDirectory(temp.PathTo("src", "empty"));
         string zip = temp.PathTo("src.zip");
 
-        utility.CompressDirectory(temp.PathTo("src"), zip);
-        utility.DecompressFile(zip, temp.PathTo("out"));
+        FileCompUtility.CompressDirectory(temp.PathTo("src"), zip);
+        FileCompUtility.DecompressFile(zip, temp.PathTo("out"));
 
         Assert.True(Directory.Exists(temp.PathTo("out", "empty")));
     }
@@ -58,7 +57,7 @@ public class CompressDirectoryTests : IDisposable
         Directory.CreateDirectory(temp.PathTo("src"));
         string zip = temp.PathTo("src.zip");
 
-        utility.CompressDirectory(temp.PathTo("src"), zip);
+        FileCompUtility.CompressDirectory(temp.PathTo("src"), zip);
 
         using ZipArchive archive = ZipFile.OpenRead(zip);
         Assert.Empty(archive.Entries);
@@ -70,7 +69,7 @@ public class CompressDirectoryTests : IDisposable
         temp.WriteFile(Path.Combine("src", "file.txt"), "x");
         string zip = temp.PathTo("src", "inside.zip");
 
-        Assert.Throws<ArgumentException>(() => utility.CompressDirectory(temp.PathTo("src"), zip));
+        Assert.Throws<ArgumentException>(() => FileCompUtility.CompressDirectory(temp.PathTo("src"), zip));
 
         Assert.False(File.Exists(zip));
         Assert.Empty(temp.LeftoverTempFiles());
@@ -81,7 +80,7 @@ public class CompressDirectoryTests : IDisposable
     {
         temp.WriteFile(Path.Combine("src", "sub", "file.txt"), "x");
 
-        Assert.Throws<ArgumentException>(() => utility.CompressDirectory(temp.PathTo("src"), temp.PathTo("src", "sub", "inside.zip")));
+        Assert.Throws<ArgumentException>(() => FileCompUtility.CompressDirectory(temp.PathTo("src"), temp.PathTo("src", "sub", "inside.zip")));
     }
 
     [Fact]
@@ -89,7 +88,7 @@ public class CompressDirectoryTests : IDisposable
     {
         temp.WriteFile(Path.Combine("src", "file.txt"), "x");
 
-        Assert.Throws<ArgumentException>(() => utility.CompressDirectory(temp.PathTo("src"), temp.PathTo("SRC", "inside.zip")));
+        Assert.Throws<ArgumentException>(() => FileCompUtility.CompressDirectory(temp.PathTo("src"), temp.PathTo("SRC", "inside.zip")));
     }
 
     [Fact]
@@ -100,7 +99,7 @@ public class CompressDirectoryTests : IDisposable
         Directory.CreateDirectory(temp.PathTo("src2"));
         string zip = temp.PathTo("src2", "out.zip");
 
-        utility.CompressDirectory(temp.PathTo("src"), zip);
+        FileCompUtility.CompressDirectory(temp.PathTo("src"), zip);
 
         Assert.True(File.Exists(zip));
     }
@@ -110,7 +109,7 @@ public class CompressDirectoryTests : IDisposable
     {
         string zip = temp.PathTo("out.zip");
 
-        Assert.Throws<DirectoryNotFoundException>(() => utility.CompressDirectory(temp.PathTo("missing"), zip));
+        Assert.Throws<DirectoryNotFoundException>(() => FileCompUtility.CompressDirectory(temp.PathTo("missing"), zip));
 
         Assert.False(File.Exists(zip));
         Assert.Empty(temp.LeftoverTempFiles());
@@ -123,7 +122,7 @@ public class CompressDirectoryTests : IDisposable
             temp.WriteFile(Path.Combine("src", $"dir{i % 10}", $"file{i}.txt"), $"content {i}");
         string zip = temp.PathTo("src.zip");
 
-        utility.CompressDirectory(temp.PathTo("src"), zip);
+        FileCompUtility.CompressDirectory(temp.PathTo("src"), zip);
 
         using ZipArchive archive = ZipFile.OpenRead(zip);
         Assert.Equal(500, archive.Entries.Count);
