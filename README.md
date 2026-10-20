@@ -4,6 +4,21 @@
 
 <p align="center">A simple, fast zip tool for Windows.</p>
 
+<p align="center"><a href="https://github.com/Ushmayne/File-Compression-Utility/releases/latest"><b>⬇ Download the latest version</b></a></p>
+
+## Download
+
+Get the latest version from the [Releases page](https://github.com/Ushmayne/File-Compression-Utility/releases/latest). There are two files to choose from:
+
+| File | Size | Use it if |
+|---|---|---|
+| `CatsCompression-<version>-win-x64.exe` | about 48 MB | You just want it to work. Nothing else to install. |
+| `CatsCompression-<version>-win-x64-needs-dotnet9.exe` | about 0.5 MB | You already have the [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0) installed. |
+
+There's no installer: download the file and double-click it. Both need 64-bit Windows 10 or 11.
+
+The app isn't digitally signed yet, so Windows may show **"Windows protected your PC"** the first time you run it. Click **More info**, then **Run anyway**. Each release also includes a `SHA256SUMS.txt` file so you can check your download hasn't been tampered with.
+
 ## Description
 
 **Cats Compression** is a Windows application designed to help users easily compress and decompress files. Using this tool, users can save storage space by compressing individual files or entire directories into **.zip** archives and easily extract them when needed.
@@ -188,7 +203,24 @@ The tests in `tests/CatsCompression.Tests` cover:
 dotnet publish CatsCompression -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -o publish
 ```
 
-This produces a single `publish/CatsCompression.exe` (about 48 MB) that runs on any 64-bit Windows PC without installing .NET. For a much smaller exe (about 180 KB) that requires the [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0), use `--self-contained false` instead.
+This produces a single `publish/CatsCompression.exe` (about 48 MB) that runs on any 64-bit Windows PC without installing .NET.
+
+For a much smaller exe (about 0.5 MB) that requires the [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0):
+
+```bash
+dotnet publish CatsCompression -c Release -r win-x64 --self-contained false -p:PublishSingleFile=true -o publish
+```
+
+### Publish a release
+
+Releases are built automatically by GitHub Actions. To publish one, tag a commit on `main` and push the tag:
+
+```bash
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+GitHub then runs the tests, builds both exes with that version number, and posts them on the Releases page.
 
 ## How to Use
 
@@ -217,3 +249,7 @@ This produces a single `publish/CatsCompression.exe` (about 48 MB) that runs on 
   ![Error message: This file is not a valid zip archive, or it is damaged](docs/screenshots/damaged-zip-error.png)
 
 - **Safety**: Archives containing paths that try to escape the destination folder (for example `../file.txt`) are blocked.
+
+## License
+
+Cats Compression is open source under the [MIT License](LICENSE). You can use, change and share it freely, including in commercial projects, as long as you keep the copyright notice.

@@ -1,0 +1,51 @@
+name: Release
+
+# Push a version tag to publish a release:
+#   git tag v1.0.0
+#   git push origin v1.0.0
+on:
+  push:
+    tags: ['v*.*.*']
+
+permissions:
+  contents: write # needed to create the GitHub Release
+
+jobs:
+  release:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Run tests
+        run: dotnet test CatsCompression.sln --configuration Release
+
+      - name: Build the two exes
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          # Runs on any 64-bit Windows PC, nothing to install.
+          dotnet publish CatsCompression -c Release -r win-x64 --self-contained \
+            -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true \
+            -p:Version="$VERSION" -o out/standalone
+          # Tiny exe that needs the .NET 9 Desktop Runtime installed.
+          dotnet publish CatsCompression -c Release -r win-x64 --self-contained false \
+            -p:PublishSingleFile=true -p:Version="$VERSION" -o out/runtime
+
+          mkdir dist
+          cp out/standalone/CatsCompression.exe "dist/CatsCompression-$VERSION-win-x64.exe"
+          cp out/runtime/CatsCompression.exe "dist/CatsCompression-$VERSION-win-x64-needs-dotnet9.exe"
+          cd dist && sha256sum *.exe > SHA256SUMS.txt && cat SHA256SUMS.txt
+
+      - name: Publish the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/* \
+            --title "Cats Compression ${GITHUB_REF_NAME#v}" \
+            --generate-notes

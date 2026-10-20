@@ -9,6 +9,10 @@
     <ApplicationIcon>app.ico</ApplicationIcon>
     <Product>Cats Compression</Product>
     <AssemblyTitle>Cats Compression</AssemblyTitle>
+    <!-- Release builds override this with the version from the git tag (v1.2.3 -> 1.2.3). -->
+    <Version>1.0.0</Version>
+    <Authors>Mohammad Usman</Authors>
+    <Copyright>Copyright (c) 2025 Mohammad Usman</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
