@@ -1,4 +1,4 @@
-namespace FileCompressionUtility;
+namespace CatsCompression;
 using System.IO;
 using System.Windows.Forms;
 using System.IO.Compression;
@@ -11,6 +11,8 @@ public partial class Form1 : Form
     public Form1()
     {
         InitializeComponent();
+        using (Stream iconStream = typeof(Form1).Assembly.GetManifestResourceStream("app.ico")!)
+            Icon = new Icon(iconStream);
         fileCompressionUtility = new FileCompUtility();
     }
     private async void btnCompressFileClick(object sender, EventArgs e)//response to when compress file button is clicked

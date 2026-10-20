@@ -1,6 +1,6 @@
 using System.IO.Compression;
 
-namespace FileCompressionUtility.Tests;
+namespace CatsCompression.Tests;
 
 public class CompressFileTests : IDisposable
 {

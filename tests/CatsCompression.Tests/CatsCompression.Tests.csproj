@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\FileCompressionUtility\FileCompressionUtility.csproj" />
+    <ProjectReference Include="..\..\CatsCompression\CatsCompression.csproj" />
   </ItemGroup>
 
   <ItemGroup>

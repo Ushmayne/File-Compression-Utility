@@ -1,4 +1,4 @@
-namespace FileCompressionUtility.Tests;
+namespace CatsCompression.Tests;
 
 // A fresh folder under %TEMP% for each test, deleted afterwards.
 public sealed class TempFolder : IDisposable

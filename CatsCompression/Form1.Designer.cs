@@ -1,4 +1,4 @@
-﻿namespace FileCompressionUtility;
+﻿namespace CatsCompression;
 
 partial class Form1
 {
@@ -70,8 +70,8 @@ partial class Form1
         this.Controls.Add(this.btnDecompressFile);
         this.Controls.Add(this.btnCompressFile);
         this.Controls.Add(this.instructionsLabel);
-        this.Name = "Zip and Unzip Please";
-        this.Text = "Zip and Unzip Please";
+        this.Name = "Cats Compression";
+        this.Text = "Cats Compression";
         this.ResumeLayout(false);
         this.PerformLayout();
     }

@@ -1,4 +1,4 @@
-namespace FileCompressionUtility;
+namespace CatsCompression;
 
 static class Program
 {

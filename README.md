@@ -1,8 +1,12 @@
-# File Compression System
+<p align="center"><img src="docs/logo.png" alt="Cats Compression logo: a cat peeking out of a yellow folder" width="160"></p>
+
+<h1 align="center">Cats Compression</h1>
+
+<p align="center">A simple, fast zip tool for Windows.</p>
 
 ## Description
 
-The **File Compression System** is a Windows application designed to help users easily compress and decompress files. Using this tool, users can save storage space by compressing individual files or entire directories into **.zip** archives and easily extract them when needed.
+**Cats Compression** is a Windows application designed to help users easily compress and decompress files. Using this tool, users can save storage space by compressing individual files or entire directories into **.zip** archives and easily extract them when needed.
 
 This application offers a simple user interface for compressing a **single file**, compressing a **whole directory**, and **extracting** a .zip archive.
 
@@ -64,7 +68,7 @@ Measured on an Intel Core i7-8700K with 32 GB RAM on Windows 10, using a Release
 
 ## Compared to Other Tools
 
-This app was tested against 7-Zip, WinRAR and the two zip tools built into Windows, using the same files on the same PC.
+Cats Compression was tested against 7-Zip, WinRAR and the two zip tools built into Windows, using the same files on the same PC.
 
 **In short:**
 
@@ -72,7 +76,7 @@ This app was tested against 7-Zip, WinRAR and the two zip tools built into Windo
 - **Slightly larger ZIP files.** Its zips are about 1.5–2 percentage points bigger than 7-Zip's ZIP output (for example 36.9% vs 35.2% of the original for text), because it uses a faster compression setting.
 - **Fast extraction.** It was the fastest to extract, or within 0.05 s of the fastest, in every test.
 - **Low memory use.** It needed 21–34 MB, compared with up to 1.6 GB for 7-Zip's 7z format.
-- **7z and RAR make smaller files.** On the text and mixed-folder tests, 7-Zip's 7z format and WinRAR shrank the data to 23–29% of its original size, against 31–37% for every ZIP tool. The 7z format was also 2–25× slower to compress than this app. WinRAR is paid software, and Windows 10 can't open either format without installing extra software.
+- **7z and RAR make smaller files.** On the text and mixed-folder tests, 7-Zip's 7z format and WinRAR shrank the data to 23–29% of its original size, against 31–37% for every ZIP tool. The 7z format was also 2–25× slower to compress than Cats Compression. WinRAR is paid software, and Windows 10 can't open either format without installing extra software.
 - **Nothing shrinks already-compressed data.** On random data, which behaves like photos, videos and existing zips, every tool ended up at about 100%.
 
 ### Test data
@@ -92,7 +96,7 @@ This app was tested against 7-Zip, WinRAR and the two zip tools built into Windo
 
 | Tool | Size after | Compress | Extract | Memory |
 |---|---|---|---|---|
-| **This app** | 36.9% | **1.7 s** | **0.3 s** | 21 MB |
+| **Cats Compression** | 36.9% | **1.7 s** | **0.3 s** | 21 MB |
 | Windows PowerShell `Compress-Archive` | 36.5% | 5.2 s | 1.2 s | 244 MB |
 | Windows `tar.exe` (ZIP) | 36.5% | 4.1 s | 0.4 s | 5 MB |
 | 7-Zip (ZIP) | 35.2% | 9.9 s | 0.5 s | 12 MB |
@@ -103,7 +107,7 @@ This app was tested against 7-Zip, WinRAR and the two zip tools built into Windo
 
 | Tool | Size after | Compress | Extract | Memory |
 |---|---|---|---|---|
-| **This app** | 32.5% | **2.9 s** | **0.4 s** | 22 MB |
+| **Cats Compression** | 32.5% | **2.9 s** | **0.4 s** | 22 MB |
 | Windows PowerShell `Compress-Archive` | 32.2% | 8.1 s | 1.7 s | 456 MB |
 | Windows `tar.exe` (ZIP) | 32.1% | 6.8 s | 0.7 s | 5 MB |
 | 7-Zip (ZIP) | 31.0% | 5.1 s | 1.0 s | 117 MB |
@@ -114,7 +118,7 @@ This app was tested against 7-Zip, WinRAR and the two zip tools built into Windo
 
 | Tool | Size after | Compress | Extract | Memory |
 |---|---|---|---|---|
-| **This app** | 41.2% | 6.9 s | **2.9 s** | 34 MB |
+| **Cats Compression** | 41.2% | 6.9 s | **2.9 s** | 34 MB |
 | Windows PowerShell `Compress-Archive` | 40.3% | 25.7 s | 9.3 s | 621 MB |
 | Windows `tar.exe` (ZIP) | 40.4% | 13.3 s | 3.2 s | 6 MB |
 | 7-Zip (ZIP) | 39.4% | **6.1 s** | 5.5 s | 182 MB |
@@ -125,7 +129,7 @@ This app was tested against 7-Zip, WinRAR and the two zip tools built into Windo
 
 | Tool | Size after | Compress | Extract | Memory |
 |---|---|---|---|---|
-| **This app** | 100.0% | 7.3 s | 0.2 s | 21 MB |
+| **Cats Compression** | 100.0% | 7.3 s | 0.2 s | 21 MB |
 | Windows PowerShell `Compress-Archive` | 100.0% | 9.0 s | 0.7 s | 641 MB |
 | Windows `tar.exe` (ZIP) | 100.1% | **6.5 s** | 0.8 s | 5 MB |
 | 7-Zip (ZIP) | 100.0% | 7.9 s | 0.2 s | 12 MB |
@@ -136,14 +140,14 @@ This app was tested against 7-Zip, WinRAR and the two zip tools built into Windo
 
 - **PC:** Intel Core i7-8700K (6 cores, 12 threads), 32 GB RAM, Samsung 850 EVO SATA SSD, Windows 10 22H2, with Windows Defender on.
 - **Versions:**
-  - This app: Release build on .NET 9.0.6.
+  - Cats Compression: Release build on .NET 9.0.6.
   - 7-Zip 26.04.
   - WinRAR 7.23.
   - Windows `tar.exe` (bsdtar 3.5.2), run with `-a` to create a zip.
   - Windows PowerShell 5.1 `Compress-Archive` / `Expand-Archive`.
-- **Settings:** every tool used its default settings. 7-Zip and WinRAR use all CPU cores. This app and the Windows tools use one core.
+- **Settings:** every tool used its default settings. 7-Zip and WinRAR use all CPU cores. Cats Compression and the Windows tools use one core.
 - **Timing:** each test ran 3 times and the middle result is shown. Times include starting the program.
-- **Memory:** the peak memory of the process while compressing. This app was measured with a small console program that calls the same `FileCompUtility` code, so the app's window adds some memory on top.
+- **Memory:** the peak memory of the process while compressing. Cats Compression was measured with a small console program that calls the same `FileCompUtility` code, so the app's window adds some memory on top.
 - **Verification:** every extracted file was checked against the original with SHA-256. All tools passed every test.
 - **Not tested:** Windows Explorer's *Send to > Compressed (zipped) folder*, because it can't be timed from a script.
 
@@ -159,10 +163,10 @@ This app was tested against 7-Zip, WinRAR and the two zip tools built into Windo
 ```bash
 git clone https://github.com/Ushmayne/File-Compression-Utility.git
 cd File-Compression-Utility
-dotnet run --project FileCompressionUtility
+dotnet run --project CatsCompression
 ```
 
-You can also open `File-Compression-Utility.sln` in Visual Studio 2022 and press **F5**.
+You can also open `CatsCompression.sln` in Visual Studio 2022 and press **F5**.
 
 ### Run the tests
 
@@ -170,7 +174,7 @@ You can also open `File-Compression-Utility.sln` in Visual Studio 2022 and press
 dotnet test
 ```
 
-The tests in `tests/FileCompressionUtility.Tests` cover:
+The tests in `tests/CatsCompression.Tests` cover:
 
 - compressing and extracting files and folders, checking the output byte for byte
 - overwrite protection
@@ -181,10 +185,10 @@ The tests in `tests/FileCompressionUtility.Tests` cover:
 ### Build a standalone .exe
 
 ```bash
-dotnet publish FileCompressionUtility -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -o publish
+dotnet publish CatsCompression -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:EnableCompressionInSingleFile=true -o publish
 ```
 
-This produces a single `publish/FileCompressionUtility.exe` (about 110 MB) that runs on any 64-bit Windows PC without installing .NET. For a much smaller exe (about 180 KB) that requires the [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0), use `--self-contained false` instead.
+This produces a single `publish/CatsCompression.exe` (about 48 MB) that runs on any 64-bit Windows PC without installing .NET. For a much smaller exe (about 180 KB) that requires the [.NET 9 Desktop Runtime](https://dotnet.microsoft.com/download/dotnet/9.0), use `--self-contained false` instead.
 
 ## How to Use
 
